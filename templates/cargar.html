@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar Secuencia</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="question">¿Cuáles son los números que quieres ingresar?</h2>
+        <form id="input-form">
+            <input type="number" min="0" max="45" id="num1" required>
+            <input type="number" min="0" max="45" id="num2" required>
+            <input type="number" min="0" max="45" id="num3" required>
+            <input type="number" min="0" max="45" id="num4" required>
+            <input type="number" min="0" max="45" id="num5" required>
+            <input type="number" min="0" max="45" id="num6" required>
+            <div class="actions">
+                <button type="submit" id="btn-ingresar" class="btn green large">Ingresar</button>
+                <a href="/" class="btn black large">Volver</a>
+            </div>
+        </form>
+        <p id="message"></p>
+    </div>
+    <script src="/static/js/cargar.js"></script>
+</body>
+</html>

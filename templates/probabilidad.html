@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probabilidad Numérica</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="prob-container">
+        <div class="prob-header">
+            <a href="/" class="btn black">Volver</a>
+            <div class="prob-title-center">
+                <h2>Probabilidad Numérica</h2>
+                <p>¿Cuál será el ticket ganador hoy?</p>
+            </div>
+            <button id="btn-refresh" class="btn green">Recargar</button>
+        </div>
+        <table id="freq-table">
+            <thead>
+                <tr><th>Número</th><th>% Aparición</th><th>Cantidad</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="top6section">
+            <h3>Ticket con más probabilidad de salir</h3>
+            <div id="ticket"></div>
+        </div>
+    </div>
+    <script src="/static/js/probabilidad.js"></script>
+</body>
+</html>
