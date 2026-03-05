@@ -47,21 +47,28 @@ Para que la aplicación esté **disponible públicamente sin necesidad de tener 
    - Start Command: `python app.py`
    - (El archivo `Procfile` o `render.yaml` lo hacen automático)
 
-4. **Deploy**:
+4. **Añade una base de datos PostgreSQL**:
+   - En el dashboard de Render, crea un servicio de tipo **PostgreSQL** (Free plan funciona).
+   - Copia la variable `DATABASE_URL` que Render te da.
+   - Ve al Web Service de tu app → Environment → Add Environment Variable
+     y pega `DATABASE_URL` allí.
+   - Con esto la app usará Postgres en lugar de SQLite.
+
+5. **Deploy**:
    - Render desplegará automáticamente
    - Te dará una URL pública como: `https://quini-abc123.onrender.com`
 
-5. **Accede** desde cualquier lugar:
+6. **Accede** desde cualquier lugar:
    - Comparte el link: `https://quini-abc123.onrender.com`
    - No necesita IP ni servidor local corriendo
-   - Los datos se guardan permanentemente
+   - Los datos se almacenan en la base Postgres y no se perderán jamás
 
 ### Notas sobre Render Free:
 
 - ✅ Gratis para ejecutar
-- ✅ Base de datos SQLite persistente
+- ✅ Base de datos Postgres persistente (no se borra en redeploy)
 - ✅ URL pública permanente
-- ⚠️ Se "duerme" después de 15 min sin actividad (primera solicitud tarda ~30s)
+- ⚠️ El servicio web se "duerme" después de 15 min sin actividad (primera solicitud tarda ~30s)
 - Si necesitas mejor rendimiento, puedes upgrade a plan pagado
 
 ---

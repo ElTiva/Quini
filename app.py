@@ -4,7 +4,13 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quini.db'
+# choose database based on environment variable (Postgres in production, SQLite local)
+db_url = os.environ.get('DATABASE_URL')
+if db_url:
+    # SQLAlchemy expects postgres:// or postgresql://
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quini.db'
 db = SQLAlchemy(app)
 
 MAX_SEQS = 20
