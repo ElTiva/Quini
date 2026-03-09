@@ -31,12 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
     inputs.forEach(input => {
         input.addEventListener('click', () => {
             if (input.value === '') return; // only if has number
-            let state = input.dataset.color || 'white';
-            const next = { white: 'red', red: 'green', green: 'white' };
-            input.classList.remove('red', 'green');
-            state = next[state];
-            input.dataset.color = state;
-            if (state !== 'white') input.classList.add(state);
+            // cycle based on existing classes; more reliable than dataset
+            if (input.classList.contains('red')) {
+                // red -> green
+                input.classList.remove('red');
+                input.classList.add('green');
+            } else if (input.classList.contains('green')) {
+                // green -> white
+                input.classList.remove('green');
+                // no class added for white
+            } else {
+                // white -> red
+                input.classList.add('red');
+            }
         });
     });
 
