@@ -19,9 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     div.textContent = item.numero;
                     tdJugada.appendChild(div);
                 });
+                const tdAciertos = document.createElement('td');
+                tdAciertos.textContent = j.aciertos;
                 tr.appendChild(tdFecha);
                 tr.appendChild(tdJugada);
-                tbody.appendChild(tr);
+                tr.appendChild(tdAciertos);
             });
         })
         .catch(err => console.error('Error loading jugadas:', err));

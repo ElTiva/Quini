@@ -31,6 +31,7 @@ class Jugada(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.Date, nullable=False)
     jugada = db.Column(db.Text, nullable=False)  # JSON with list of {numero, color}
+    aciertos = db.Column(db.Integer, default=0)  # count of green cells
 
 # Create tables
 with app.app_context():
@@ -140,7 +141,8 @@ def guardar_jugada():
             return jsonify({'success': False, 'error': 'Color inválido'}), 400
     
     jugada_json = json.dumps(jugada)
-    nueva_jugada = Jugada(fecha=fecha, jugada=jugada_json)
+    aciertos = sum(1 for item in jugada if item['color'] == 'green')
+    nueva_jugada = Jugada(fecha=fecha, jugada=jugada_json, aciertos=aciertos)
     db.session.add(nueva_jugada)
     db.session.commit()
     
@@ -153,7 +155,8 @@ def obtener_jugadas():
     for j in jugadas:
         result.append({
             'fecha': j.fecha.isoformat(),
-            'jugada': json.loads(j.jugada)
+            'jugada': json.loads(j.jugada),
+            'aciertos': j.aciertos
         })
     return jsonify(result)
 
