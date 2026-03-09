@@ -146,9 +146,10 @@ table td {
 
 .jugadas-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .jugadas-title {
@@ -157,7 +158,8 @@ table td {
 }
 
 .control-btn {
-    margin-left: auto;
+    position: absolute;
+    right: 0;
 }
 
 .form-section {
