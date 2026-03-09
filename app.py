@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
+import json
 
 app = Flask(__name__)
 # choose database based on environment variable (Postgres in production, SQLite local)
@@ -25,6 +26,12 @@ class Sequence(db.Model):
     def get_numbers(self):
         return [int(n) for n in self.numbers.split(',')]
 
+# Database model for jugadas
+class Jugada(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fecha = db.Column(db.Date, nullable=False)
+    jugada = db.Column(db.Text, nullable=False)  # JSON with list of {numero, color}
+
 # Create tables
 with app.app_context():
     db.create_all()
@@ -40,6 +47,10 @@ def cargar_page():
 @app.route('/probabilidad')
 def probabilidad_page():
     return render_template('probabilidad.html')
+
+@app.route('/jugadas')
+def jugadas_page():
+    return render_template('jugadas.html')
 
 @app.route('/ingresar', methods=['POST'])
 def ingresar():
@@ -81,27 +92,48 @@ def ingresar():
     
     return jsonify({'success': True}), 200
 
-@app.route('/frecuencias', methods=['GET'])
-def frecuencias():
-    # Get all sequences and count frequencies
-    all_sequences = Sequence.query.all()
-    counts = {i: 0 for i in range(0, 46)}
-    total = 0
+@app.route('/guardar_jugada', methods=['POST'])
+def guardar_jugada():
+    data = request.get_json()
+    if not data or 'fecha' not in data or 'jugada' not in data:
+        return jsonify({'success': False, 'error': 'Falta payload'}), 400
     
-    for seq in all_sequences:
-        for n in seq.get_numbers():
-            counts[n] += 1
-            total += 1
+    fecha_str = data['fecha']
+    jugada = data['jugada']
     
-    freqs = []
-    for i in range(0, 46):
-        pct = (counts[i] / total * 100) if total > 0 else 0
-        freqs.append({'number': i, 'percentage': pct, 'count': counts[i]})
+    try:
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+    except ValueError:
+        return jsonify({'success': False, 'error': 'Fecha inválida'}), 400
     
-    # compute top 6 numbers by percentage
-    sorted_nums = sorted(freqs, key=lambda x: x['percentage'], reverse=True)
-    top6 = sorted_nums[:6]
-    return jsonify({'frecuencias': freqs, 'top6': top6})
+    if not isinstance(jugada, list) or len(jugada) != 6:
+        return jsonify({'success': False, 'error': 'Jugada debe ser lista de 6 elementos'}), 400
+    
+    for item in jugada:
+        if not isinstance(item, dict) or 'numero' not in item or 'color' not in item:
+            return jsonify({'success': False, 'error': 'Formato de jugada inválido'}), 400
+        if not (0 <= item['numero'] <= 45):
+            return jsonify({'success': False, 'error': 'Números deben estar entre 0 y 45'}), 400
+        if item['color'] not in ['white', 'red', 'green']:
+            return jsonify({'success': False, 'error': 'Color inválido'}), 400
+    
+    jugada_json = json.dumps(jugada)
+    nueva_jugada = Jugada(fecha=fecha, jugada=jugada_json)
+    db.session.add(nueva_jugada)
+    db.session.commit()
+    
+    return jsonify({'success': True}), 200
+
+@app.route('/obtener_jugadas', methods=['GET'])
+def obtener_jugadas():
+    jugadas = Jugada.query.order_by(Jugada.fecha.desc()).all()
+    result = []
+    for j in jugadas:
+        result.append({
+            'fecha': j.fecha.isoformat(),
+            'jugada': json.loads(j.jugada)
+        })
+    return jsonify(result)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

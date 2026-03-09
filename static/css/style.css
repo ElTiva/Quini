@@ -47,6 +47,7 @@ body {
 .btn.green { background-color: #4CAF50; }
 .btn.red { background-color: #f44336; }
 .btn.black { background-color: #000; color: #fff; }
+.btn.blue { background-color: #2196F3; }
 
 table {
     margin: 0 auto;
@@ -100,15 +101,48 @@ th, td {
     color: #555;
 }
 
-input[type=number] {
+.input-cell {
     width: 60px;
     height: 60px;
     text-align: center;
-    margin: 15px;
+    margin: 5px;
     font-size: 1.5rem;
+    border: 1px solid #ccc;
+    background-color: white;
 }
 
-#ticket {
+.input-cell.red { background-color: #ffcdd2; }
+.jugadas-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.jugadas-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+.inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+#jugadas-table {
+    margin-top: 40px;
+}
     display: flex;
     justify-content: center;
     gap: 10px;

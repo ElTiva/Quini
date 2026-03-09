@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugadas Realizadas</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="jugadas-container">
+        <h2 class="jugadas-title">Jugadas Realizadas</h2>
+        <div class="form-section">
+            <input type="date" id="fecha" required>
+            <div class="inputs">
+                <input type="number" min="0" max="45" class="input-cell" id="num1" required>
+                <input type="number" min="0" max="45" class="input-cell" id="num2" required>
+                <input type="number" min="0" max="45" class="input-cell" id="num3" required>
+                <input type="number" min="0" max="45" class="input-cell" id="num4" required>
+                <input type="number" min="0" max="45" class="input-cell" id="num5" required>
+                <input type="number" min="0" max="45" class="input-cell" id="num6" required>
+            </div>
+            <div class="actions">
+                <button id="btn-guardar" class="btn red large">Guardar</button>
+                <a href="/" class="btn black large">Volver</a>
+            </div>
+        </div>
+        <table id="jugadas-table">
+            <thead>
+                <tr><th>Fecha</th><th>Jugada</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script src="/static/js/jugadas.js"></script>
+</body>
+</html>
