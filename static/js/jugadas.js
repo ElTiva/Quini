@@ -21,9 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const tdAciertos = document.createElement('td');
                 tdAciertos.textContent = j.aciertos;
+                const tdPremio = document.createElement('td');
+                tdPremio.textContent = j.premio;
+                if (j.premio === "Premio") {
+                    tdPremio.style.backgroundColor = "#c8e6c9"; // green
+                }
                 tr.appendChild(tdFecha);
                 tr.appendChild(tdJugada);
                 tr.appendChild(tdAciertos);
+                tr.appendChild(tdPremio);
             });
         })
         .catch(err => console.error('Error loading jugadas:', err));
@@ -69,10 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (input.classList.contains('green')) color = 'green';
             jugada.push({ numero: num, color: color });
         }
+        const aciertosInput = document.getElementById('aciertos');
+        const aciertos = parseInt(aciertosInput.value);
+        if (isNaN(aciertos) || aciertos < 0 || aciertos > 6) {
+            messageEl.textContent = 'Aciertos debe ser entre 0 y 6';
+            return;
+        }
         fetch('/guardar_jugada', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fecha: fecha, jugada: jugada })
+            body: JSON.stringify({ fecha: fecha, jugada: jugada, aciertos: aciertos })
         })
         .then(res => res.json())
         .then(data => {
@@ -87,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     input.classList.remove('red', 'green');
                     input.dataset.clicks = 0;
                 }
+                document.getElementById('aciertos').value = '';
                 // Reload table
                 location.reload();
             } else {

@@ -30,7 +30,7 @@ class Sequence(db.Model):
 class Jugada(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.Date, nullable=False)
-    jugada = db.Column(db.Text, nullable=False)  # JSON with list of {numero, color}
+    jugada = db.Column(db.Text, nullable=False)  # JSON with {'numeros': [...], 'aciertos': int}
 
 # Create tables
 with app.app_context():
@@ -118,11 +118,12 @@ def ingresar():
 def guardar_jugada():
     try:
         data = request.get_json()
-        if not data or 'fecha' not in data or 'jugada' not in data:
+        if not data or 'fecha' not in data or 'jugada' not in data or 'aciertos' not in data:
             return jsonify({'success': False, 'error': 'Falta payload'}), 400
         
         fecha_str = data['fecha']
         jugada = data['jugada']
+        aciertos = data['aciertos']
         
         try:
             fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
@@ -140,7 +141,10 @@ def guardar_jugada():
             if item['color'] not in ['white', 'red', 'green']:
                 return jsonify({'success': False, 'error': 'Color inválido'}), 400
         
-        jugada_json = json.dumps(jugada)
+        if not isinstance(aciertos, int) or not (0 <= aciertos <= 6):
+            return jsonify({'success': False, 'error': 'Aciertos debe ser entero entre 0 y 6'}), 400
+        
+        jugada_json = json.dumps({'numeros': jugada, 'aciertos': aciertos})
         nueva_jugada = Jugada(fecha=fecha, jugada=jugada_json)
         db.session.add(nueva_jugada)
         db.session.commit()
@@ -155,12 +159,15 @@ def obtener_jugadas():
     jugadas = Jugada.query.order_by(Jugada.fecha.desc()).all()
     result = []
     for j in jugadas:
-        jugada_data = json.loads(j.jugada)
-        aciertos = sum(1 for item in jugada_data if item['color'] == 'green')
+        data = json.loads(j.jugada)
+        jugada_data = data['numeros']
+        aciertos = data['aciertos']
+        premio = "Premio" if aciertos in [4, 5, 6] else "Sin Premio"
         result.append({
             'fecha': j.fecha.isoformat(),
             'jugada': jugada_data,
-            'aciertos': aciertos
+            'aciertos': aciertos,
+            'premio': premio
         })
     return jsonify(result)
 
