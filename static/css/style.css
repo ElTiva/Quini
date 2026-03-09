@@ -170,6 +170,8 @@ table td {
 #jugadas-table {
     margin-top: 40px;
 }
+
+#ticket {
     display: flex;
     justify-content: center;
     gap: 10px;

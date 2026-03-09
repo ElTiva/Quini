@@ -35,6 +35,10 @@ class Jugada(db.Model):
 
 # Create tables
 with app.app_context():
+    try:
+        db.engine.execute("ALTER TABLE jugada ADD COLUMN aciertos INTEGER DEFAULT 0;")
+    except:
+        pass
     db.create_all()
 
 @app.route('/')
