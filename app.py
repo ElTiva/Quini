@@ -156,20 +156,35 @@ def guardar_jugada():
 
 @app.route('/obtener_jugadas', methods=['GET'])
 def obtener_jugadas():
-    jugadas = Jugada.query.order_by(Jugada.fecha.desc()).all()
-    result = []
-    for j in jugadas:
-        data = json.loads(j.jugada)
-        jugada_data = data['numeros']
-        aciertos = data['aciertos']
-        premio = "Premio :)" if aciertos in [4, 5, 6] else "Sin Premio"
-        result.append({
-            'fecha': j.fecha.isoformat(),
-            'jugada': jugada_data,
-            'aciertos': aciertos,
-            'premio': premio
-        })
-    return jsonify(result)
+    try:
+        jugadas = Jugada.query.order_by(Jugada.fecha.desc()).all()
+        result = []
+        for j in jugadas:
+            try:
+                data = json.loads(j.jugada)
+                # Handle both old format (list) and new format (dict)
+                if isinstance(data, list):
+                    # Old format: just list of numbers with colors
+                    jugada_data = data
+                    aciertos = 0
+                else:
+                    # New format: dict with 'numeros' and 'aciertos'
+                    jugada_data = data.get('numeros', [])
+                    aciertos = data.get('aciertos', 0)
+                
+                premio = "Premio :)" if aciertos in [4, 5, 6] else "Sin Premio"
+                result.append({
+                    'fecha': j.fecha.isoformat(),
+                    'jugada': jugada_data,
+                    'aciertos': aciertos,
+                    'premio': premio
+                })
+            except Exception as e:
+                # Skip malformed entries
+                continue
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.appendChild(tdJugada);
                 tr.appendChild(tdAciertos);
                 tr.appendChild(tdPremio);
+                tbody.appendChild(tr);
             });
         })
         .catch(err => console.error('Error loading jugadas:', err));
