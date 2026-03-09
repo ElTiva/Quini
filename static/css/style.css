@@ -59,8 +59,10 @@ table, th, td {
     border: 1px solid #ccc;
 }
 
-th, td {
+table th,
+table td {
     padding: 8px;
+    text-align: center;
 }
 
 .high { background-color: #c8e6c9; }
@@ -101,25 +103,36 @@ th, td {
     color: #555;
 }
 
-/* uniform sizing for all cells and inputs */
-.input-cell,
-#ticket .cell,
-table th,
-table td {
+/* Input cells for Cargar and Jugadas inputs: 60px × 60px */
+.input-cell {
     width: 60px;
     height: 60px;
+    font-size: 2rem;
+    margin: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
     text-align: center;
 }
 
-.input-cell {
-    margin: 5px;
-    font-size: 1.5rem;
+.input-cell.red { background-color: #ffcdd2; }
+.input-cell.green { background-color: #c8e6c9; }
+
+/* Saved jugada cells in table: 30px × 30px */
+.saved-cell {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+    margin: 2px;
     border: 1px solid #ccc;
     background-color: white;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.input-cell.red { background-color: #ffcdd2; }
-
+.saved-cell.red { background-color: #ffcdd2; }
+.saved-cell.green { background-color: #c8e6c9; }
 /* in-page feedback message */
 .message {
     color: red;
@@ -172,7 +185,7 @@ table td {
     align-items: center;
     justify-content: center;
     border-radius: 3px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
 }
 

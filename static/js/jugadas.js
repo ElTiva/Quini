@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tdJugada.style.gap = '5px';
                 j.jugada.forEach(item => {
                     const div = document.createElement('div');
-                    div.className = `input-cell ${item.color}`;
+                    div.className = `saved-cell ${item.color}`;
                     div.textContent = item.numero;
                     tdJugada.appendChild(div);
                 });
