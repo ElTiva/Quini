@@ -31,14 +31,9 @@ class Jugada(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.Date, nullable=False)
     jugada = db.Column(db.Text, nullable=False)  # JSON with list of {numero, color}
-    aciertos = db.Column(db.Integer, default=0)  # count of green cells
 
 # Create tables
 with app.app_context():
-    try:
-        db.engine.execute("ALTER TABLE jugada ADD COLUMN aciertos INTEGER DEFAULT 0;")
-    except:
-        pass
     db.create_all()
 
 @app.route('/')
@@ -121,46 +116,51 @@ def ingresar():
 
 @app.route('/guardar_jugada', methods=['POST'])
 def guardar_jugada():
-    data = request.get_json()
-    if not data or 'fecha' not in data or 'jugada' not in data:
-        return jsonify({'success': False, 'error': 'Falta payload'}), 400
-    
-    fecha_str = data['fecha']
-    jugada = data['jugada']
-    
     try:
-        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
-    except ValueError:
-        return jsonify({'success': False, 'error': 'Fecha inválida'}), 400
-    
-    if not isinstance(jugada, list) or len(jugada) != 6:
-        return jsonify({'success': False, 'error': 'Jugada debe ser lista de 6 elementos'}), 400
-    
-    for item in jugada:
-        if not isinstance(item, dict) or 'numero' not in item or 'color' not in item:
-            return jsonify({'success': False, 'error': 'Formato de jugada inválido'}), 400
-        if not (0 <= item['numero'] <= 45):
-            return jsonify({'success': False, 'error': 'Números deben estar entre 0 y 45'}), 400
-        if item['color'] not in ['white', 'red', 'green']:
-            return jsonify({'success': False, 'error': 'Color inválido'}), 400
-    
-    jugada_json = json.dumps(jugada)
-    aciertos = sum(1 for item in jugada if item['color'] == 'green')
-    nueva_jugada = Jugada(fecha=fecha, jugada=jugada_json, aciertos=aciertos)
-    db.session.add(nueva_jugada)
-    db.session.commit()
-    
-    return jsonify({'success': True}), 200
+        data = request.get_json()
+        if not data or 'fecha' not in data or 'jugada' not in data:
+            return jsonify({'success': False, 'error': 'Falta payload'}), 400
+        
+        fecha_str = data['fecha']
+        jugada = data['jugada']
+        
+        try:
+            fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        except ValueError:
+            return jsonify({'success': False, 'error': 'Fecha inválida'}), 400
+        
+        if not isinstance(jugada, list) or len(jugada) != 6:
+            return jsonify({'success': False, 'error': 'Jugada debe ser lista de 6 elementos'}), 400
+        
+        for item in jugada:
+            if not isinstance(item, dict) or 'numero' not in item or 'color' not in item:
+                return jsonify({'success': False, 'error': 'Formato de jugada inválido'}), 400
+            if not (0 <= item['numero'] <= 45):
+                return jsonify({'success': False, 'error': 'Números deben estar entre 0 y 45'}), 400
+            if item['color'] not in ['white', 'red', 'green']:
+                return jsonify({'success': False, 'error': 'Color inválido'}), 400
+        
+        jugada_json = json.dumps(jugada)
+        nueva_jugada = Jugada(fecha=fecha, jugada=jugada_json)
+        db.session.add(nueva_jugada)
+        db.session.commit()
+        
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/obtener_jugadas', methods=['GET'])
 def obtener_jugadas():
     jugadas = Jugada.query.order_by(Jugada.fecha.desc()).all()
     result = []
     for j in jugadas:
+        jugada_data = json.loads(j.jugada)
+        aciertos = sum(1 for item in jugada_data if item['color'] == 'green')
         result.append({
             'fecha': j.fecha.isoformat(),
-            'jugada': json.loads(j.jugada),
-            'aciertos': j.aciertos
+            'jugada': jugada_data,
+            'aciertos': aciertos
         })
     return jsonify(result)
 
