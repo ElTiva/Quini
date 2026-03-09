@@ -162,7 +162,7 @@ def obtener_jugadas():
         data = json.loads(j.jugada)
         jugada_data = data['numeros']
         aciertos = data['aciertos']
-        premio = "Premio" if aciertos in [4, 5, 6] else "Sin Premio"
+        premio = "Premio :)" if aciertos in [4, 5, 6] else "Sin Premio"
         result.append({
             'fecha': j.fecha.isoformat(),
             'jugada': jugada_data,

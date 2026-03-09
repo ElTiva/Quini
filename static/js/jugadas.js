@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tdAciertos.textContent = j.aciertos;
                 const tdPremio = document.createElement('td');
                 tdPremio.textContent = j.premio;
-                if (j.premio === "Premio") {
+                if (j.premio === "Premio :)") {
                     tdPremio.style.backgroundColor = "#c8e6c9"; // green
                 }
                 tr.appendChild(tdFecha);
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             tdAciertos.textContent = j.aciertos;
                             const tdPremio = document.createElement('td');
                             tdPremio.textContent = j.premio;
-                            if (j.premio === "Premio") {
+                            if (j.premio === "Premio :)") {
                                 tdPremio.style.backgroundColor = "#c8e6c9";
                             }
                             tr.appendChild(tdFecha);
