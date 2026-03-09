@@ -149,6 +149,15 @@ def guardar_jugada():
         db.session.add(nueva_jugada)
         db.session.commit()
         
+        # Keep only last 20 jugadas
+        all_jugadas = Jugada.query.order_by(Jugada.id).all()
+        if len(all_jugadas) > 20:
+            # Delete oldest jugadas, keeping only the last 20
+            to_delete = all_jugadas[:-20]
+            for j in to_delete:
+                db.session.delete(j)
+            db.session.commit()
+        
         return jsonify({'success': True}), 200
     except Exception as e:
         db.session.rollback()
@@ -157,7 +166,8 @@ def guardar_jugada():
 @app.route('/obtener_jugadas', methods=['GET'])
 def obtener_jugadas():
     try:
-        jugadas = Jugada.query.order_by(Jugada.fecha.desc()).all()
+        # Get last 20 jugadas only
+        jugadas = Jugada.query.order_by(Jugada.fecha.desc()).limit(20).all()
         result = []
         for j in jugadas:
             try:
