@@ -100,8 +100,41 @@ document.addEventListener('DOMContentLoaded', () => {
                     input.dataset.clicks = 0;
                 }
                 document.getElementById('aciertos').value = '';
-                // Reload table
-                location.reload();
+                // Reload table without full page reload
+                fetch('/obtener_jugadas')
+                    .then(res => res.json())
+                    .then(data => {
+                        const tbody = document.querySelector('#jugadas-table tbody');
+                        tbody.innerHTML = '';
+                        data.forEach(j => {
+                            const tr = document.createElement('tr');
+                            const tdFecha = document.createElement('td');
+                            tdFecha.textContent = new Date(j.fecha).toLocaleDateString('es-ES');
+                            const tdJugada = document.createElement('td');
+                            tdJugada.style.display = 'flex';
+                            tdJugada.style.justifyContent = 'center';
+                            tdJugada.style.gap = '5px';
+                            j.jugada.forEach(item => {
+                                const div = document.createElement('div');
+                                div.className = `saved-cell ${item.color}`;
+                                div.textContent = item.numero;
+                                tdJugada.appendChild(div);
+                            });
+                            const tdAciertos = document.createElement('td');
+                            tdAciertos.textContent = j.aciertos;
+                            const tdPremio = document.createElement('td');
+                            tdPremio.textContent = j.premio;
+                            if (j.premio === "Premio") {
+                                tdPremio.style.backgroundColor = "#c8e6c9";
+                            }
+                            tr.appendChild(tdFecha);
+                            tr.appendChild(tdJugada);
+                            tr.appendChild(tdAciertos);
+                            tr.appendChild(tdPremio);
+                            tbody.appendChild(tr);
+                        });
+                    })
+                    .catch(err => console.error('Error reloading jugadas:', err));
             } else {
                 messageEl.textContent = data.error || 'Error';
                 messageEl.className = 'error';
