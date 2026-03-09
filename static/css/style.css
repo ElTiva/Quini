@@ -101,10 +101,17 @@ th, td {
     color: #555;
 }
 
-.input-cell {
+/* uniform sizing for all cells and inputs */
+.input-cell,
+#ticket .cell,
+table th,
+table td {
     width: 60px;
     height: 60px;
     text-align: center;
+}
+
+.input-cell {
     margin: 5px;
     font-size: 1.5rem;
     border: 1px solid #ccc;
@@ -112,6 +119,13 @@ th, td {
 }
 
 .input-cell.red { background-color: #ffcdd2; }
+
+/* in-page feedback message */
+.message {
+    color: red;
+    margin: 10px 0;
+    font-weight: bold;
+}
 .jugadas-container {
     text-align: center;
     padding: 20px;

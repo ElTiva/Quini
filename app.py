@@ -52,6 +52,28 @@ def probabilidad_page():
 def jugadas_page():
     return render_template('jugadas.html')
 
+@app.route('/frecuencias', methods=['GET'])
+def frecuencias():
+    # Get all sequences and count frequencies
+    all_sequences = Sequence.query.all()
+    counts = {i: 0 for i in range(0, 46)}
+    total = 0
+    
+    for seq in all_sequences:
+        for n in seq.get_numbers():
+            counts[n] += 1
+            total += 1
+    
+    freqs = []
+    for i in range(0, 46):
+        pct = (counts[i] / total * 100) if total > 0 else 0
+        freqs.append({'number': i, 'percentage': pct, 'count': counts[i]})
+    
+    # compute top 6 numbers by percentage
+    sorted_nums = sorted(freqs, key=lambda x: x['percentage'], reverse=True)
+    top6 = sorted_nums[:6]
+    return jsonify({'frecuencias': freqs, 'top6': top6})
+
 @app.route('/ingresar', methods=['POST'])
 def ingresar():
     data = request.get_json()
