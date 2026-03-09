@@ -8,7 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
             data.forEach(j => {
                 const tr = document.createElement('tr');
                 const tdFecha = document.createElement('td');
-                tdFecha.textContent = new Date(j.fecha).toLocaleDateString('es-ES'); // DD/MM/YYYY
+                // Parse date correctly without timezone offset
+                const [year, month, day] = j.fecha.split('-');
+                const date = new Date(year, month - 1, day);
+                tdFecha.textContent = date.toLocaleDateString('es-ES');
                 const tdJugada = document.createElement('td');
                 tdJugada.style.display = 'flex';
                 tdJugada.style.justifyContent = 'center';
